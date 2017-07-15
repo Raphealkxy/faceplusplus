@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.timmy.faceplusplus.MainActivity">
+
+    <Button
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:text="detect"
+        android:id="@+id/btn_detect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <Button
+        android:text="getImage"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/btn_detect"
+        android:id="@+id/btn_getImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/pipei"
+        android:layout_below="@+id/image_pic"
+        android:layout_toLeftOf="@+id/btn_getImage"
+        android:text="匹配"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+
+        <ImageView
+            android:src="@drawable/t4"
+            android:id="@+id/image_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btn_detect"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+
+            />
+
+
+
+
+
+
+
+      <TextView
+          android:id="@+id/id_age_and_gender"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/male"
+          android:background="@drawable/hint"
+          android:visibility="invisible"
+          android:textColor="#ffff00ff"
+          android:textSize="22sp"
+          android:gravity="center"
+          android:text="123"
+
+
+          />
+
+
+
+
+</RelativeLayout>
