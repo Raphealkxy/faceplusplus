@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.timmy.faceplusplus.util.FaceUtil;
 import com.megvii.cloud.http.CommonOperate;
+import com.megvii.cloud.http.FaceOperate;
 import com.megvii.cloud.http.FaceSetOperate;
 import com.megvii.cloud.http.Response;
 
@@ -50,6 +52,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Toast mToast;
     private byte[] mImageData = null;
     private Button btn_verfiy;
+    private Button Take_photo;
+    private Button btn_register;
     //api涉及的参数
     //private TextView mTextView;
     private String attributes="emotion,gender,age,smiling,glass,headpose,facequality,blur";
@@ -70,6 +74,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
       btn_detect.setOnClickListener(this);
         btn_getpicture.setOnClickListener(this);
         btn_verfiy.setOnClickListener(this);
+        Take_photo.setOnClickListener(this);
+        btn_register.setOnClickListener(this);
 
     }
 
@@ -78,6 +84,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         btn_getpicture= (Button) findViewById(R.id.btn_getImage);
         btn_detect= (Button) findViewById(R.id.btn_detect);
         btn_verfiy= (Button) findViewById(R.id.pipei);
+        Take_photo= (Button) findViewById(R.id.take_photo);
+        btn_register= (Button) findViewById(R.id.btn_register);
+
         //  textView= (TextView) findViewById(R.id.Tip);
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
@@ -87,6 +96,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId())
         {
+            case R.id.btn_register:
+                register();
+                break;
             case R.id.btn_detect:
                 Log.e("TAG","detect");
                 //detect函数
@@ -100,8 +112,61 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Log.e("TAG","123456");
                 face_pipei();
                 break;
+            case R.id.take_photo:
+               // Log.e("TAG","123456");
+                take_photo();
+                break;
         }
 
+    }
+
+    private void register() {
+        if(mImage==null)
+        {
+            showTip("请先选择或者拍一张照片");
+            return;
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String faceToken=null;
+
+
+                try {
+                    CommonOperate commonOperate = new CommonOperate(key, secret, false);//创建连接
+                    Response response = commonOperate.detectByte(Bitmap2Bytes(mImage), 0, attributes);//以本地而形式探测
+                    faceToken = getFaceToken(response);
+                    FaceSetOperate faceSetOperate=new FaceSetOperate(key, secret, false);
+                    Response response1=faceSetOperate.addFaceByFaceToken(faceToken,"c0f50247c7d194f0998d555de208f0e6");
+                    FaceOperate faceOperate=new FaceOperate(key, secret, false);
+                    Response response2=faceOperate.faceSetUserId(faceToken,"hangdengji");
+                    String s=new String(response2.getContent());
+                    if(response.getStatus()==200)
+                    {
+                        String res = new String(response1.getContent());//连接成功
+                        Log.e("registerresult", res);//将返回的数据打印出来
+                    }
+                    Log.e("setid",s);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
+    }
+
+    private void take_photo() {
+        // 设置相机拍照后照片保存路径
+        mPictureFile = new File(Environment.getExternalStorageDirectory(),
+                "picture" + System.currentTimeMillis()/1000 + ".jpg");
+        // 启动拍照,并保存到临时文件
+        Intent mIntent = new Intent();
+        mIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        mIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPictureFile));
+        mIntent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
+        startActivityForResult(mIntent, REQUEST_CAMERA_IMAGE);
     }
 
     private void face_pipei() {
@@ -128,37 +193,41 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
                     try {
-                        Response response1 = commonOperate.detectByte(getBitmap(R.mipmap.c04), 0, attributes);//以本地而形式探测
-                        faceToken1 = getFaceToken(response1);
+                     //   Response response1 = commonOperate.detectByte(getBitmap(R.mipmap.c04), 0, attributes);//以本地而形式探测
+                     //   faceToken1 = getFaceToken(response1);
                      //   Response response2=commonOperate.detectByte(getBitmap(R.mipmap.c05), 0, attributes);
                       //  faceToken2=getFaceToken(response2);
                       //  faces.add(faceToken2);//将这个人脸假如列表用于后续搜索比对
            //             Response response3=commonOperate.detectByte(getBitmap(R.mipmap.c06), 0, attributes);
 //                        faceToken3=getFaceToken(response3);
               //          faces.add(faceToken3);//将这个人脸假如列表用于后续搜索比对
-                        Response response4=commonOperate.detectByte(getBitmap(R.mipmap.c032), 0, attributes);
-                        faceToken4=getFaceToken(response4);
-                        faces.add(faceToken4);//将这个人脸假如列表用于后续搜索比对
+//                        Response response4=commonOperate.detectByte(getBitmap(R.mipmap.c032), 0, attributes);
+//                        faceToken4=getFaceToken(response4);
+//                        faces.add(faceToken4);//将这个人脸假如列表用于后续搜索比对
 
 
-                        Response response5=commonOperate.detectByte(getBitmap(R.mipmap.c033), 0, attributes);
-                        faceToken5=getFaceToken(response5);
-                        faces.add(faceToken5);//将这个人脸假如列表用于后续搜索比对
+//                        Response response5=commonOperate.detectByte(getBitmap(R.mipmap.c033), 0, attributes);
+//                        faceToken5=getFaceToken(response5);
+//                        faces.add(faceToken5);//将这个人脸假如列表用于后续搜索比对
 
-                        Response response6=commonOperate.detectByte(getBitmap(R.mipmap.c11), 0, attributes);
+                        Response response6=commonOperate.detectByte(Bitmap2Bytes(mImage), 0, attributes);
                         faceToken6=getFaceToken(response6);
                        //faces.add(faceToken6);//将这个人脸假如列表用于后续搜索比对
 
                         //创建人脸库，并往里加人脸
                         //create faceSet and add face
-                        String faceTokens = creatFaceTokens(faces);
-                        Response faceset = FaceSet.createFaceSet(null,"test",null,faceTokens,null, 1);//test为脸集在系统中的标识
-                        String faceSetResult = new String(faceset.getContent());//获取脸集创建的信息
-                        Log.e("faceSetResult",faceSetResult);//打印信息
+//                        String faceTokens = creatFaceTokens(faces);
+//                        Response faceset = FaceSet.createFaceSet(null,"test",null,faceTokens,null, 1);//test为脸集在系统中的标识
+//                        String faceSetResult = new String(faceset.getContent());//获取脸集创建的信息
+//                        Log.e("faceSetResult",faceSetResult);//打印信息
                    //     Response res = commonOperate.searchByOuterId(null, imageUrl, null, "test", 1);
                       Response res=commonOperate.searchByFaceSetToken(faceToken6,null,null,"c0f50247c7d194f0998d555de208f0e6",1);
                         String result = new String(res.getContent());//获取比对结果
-                        Log.e("result", result);
+                       Log.e("result", result);
+                        JSONObject resultjason=new JSONObject(result);
+                        Double confidence=resultjason.getJSONArray("results").getJSONObject(0).getDouble("confidence");
+                        String s= String.valueOf(confidence);
+                        showTip(s);
 
                     } catch (Exception e) {
                         e.printStackTrace();
