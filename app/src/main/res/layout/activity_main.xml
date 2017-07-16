@@ -19,7 +19,6 @@
     <Button
         android:text="getImage"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@+id/btn_detect"
         android:id="@+id/btn_getImage"
         android:layout_width="wrap_content"
@@ -43,6 +42,7 @@
         android:layout_height="wrap_content" />
 
 
+
     <Button
         android:id="@+id/btn_register"
         android:text="注册"
@@ -64,7 +64,16 @@
 
             />
 
-
+    <!--android:textColor="@android:color/black"-->
+    <!--android:layout_above="@+id/btn_getImage"-->
+    <!--android:layout_toLeftOf="@+id/btn_register"-->
+    <EditText
+        android:id="@+id/user_name"
+        android:hint="你输入用户id:"
+        android:layout_toLeftOf="@+id/btn_register"
+        android:layout_above="@+id/take_photo"
+    android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
 
